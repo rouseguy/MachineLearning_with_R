@@ -92,6 +92,7 @@ plot(train$age, train$balance)
 #Demonstrating oneHot Encoding
 
 oneHotTest <- data.frame(cbind(1:4, c("A","B","B","C"), c("B","B","B","A")))
+oneHotTest$X1 <- as.numeric(oneHotTest$X1)
 
 install.packages("caret")
 library(caret)
@@ -103,6 +104,33 @@ ontHotEncodedTest <- predict(dummyVars(X1 ~., data=oneHotTest), oneHotTest)
 oneHotEncodeModel <- dummyVars(deposit ~ . , data=train)
 trainUpdated <- predict(oneHotEncodeModel, newdata=train)
 testUpdated <- predict(oneHotEncodeModel, newdata=test)
+
+#Unique values for the target
+unique(train$deposit)
+
+
+#Learn about ifelse
+?ifelse
+
+
+#Encode the target as 0 or 1. If deposit is yes, it is set to 1
+#Else, it is set to 0
+trainLabel <- ifelse(train$deposit=="yes", 1, 0)
+
+trainLabel[0:100]
+
+#Similarly, do this for test
+testLabel <- ifelse(test$deposit=="yes", 1, 0)
+
+#Add the labels to the trainUpdated and testUpdated
+trainUpdated <- data.frame(cbind(trainUpdated, label=trainLabel))
+testUpdated$label <- data.frame(cbind(testUpdated, label=testLabel))
+
+
+#Check column names of train
+colnames(trainUpdated)
+
+trainCorrelation <- cor(trainUpdated)
 
 ########################################
 #End of SECTION 3.2
